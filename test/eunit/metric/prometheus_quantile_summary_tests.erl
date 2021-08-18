@@ -312,6 +312,10 @@ test_default_value(_) ->
     ]),
     UndefinedValue = prometheus_quantile_summary:value(orders_summary, [electronics]),
 
+    [MF] = prometheus_collector:collect_mf_to_list(prometheus_quantile_summary),
+
+    #'MetricFamily'{metric = EmptyMetric} = MF,
+
     prometheus_quantile_summary:new([
         {name, something_summary},
         {labels, []},
@@ -320,6 +324,7 @@ test_default_value(_) ->
     SomethingValue = prometheus_quantile_summary:value(something_summary),
     [
         ?_assertEqual(undefined, UndefinedValue),
+        ?_assertMatch([], EmptyMetric),
         ?_assertMatch({0, 0, _}, SomethingValue)
     ].
 
