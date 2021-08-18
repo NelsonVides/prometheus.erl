@@ -333,14 +333,17 @@ values(Registry, Name) ->
             DU = prometheus_metric:mf_duration_unit(MF),
             Labels = prometheus_metric:mf_labels(MF),
             #{quantiles := QNs} = Configuration = prometheus_metric:mf_data(MF),
-
             MFValues = load_all_values(Registry, Name),
             ReducedMap = lists:foldl(
-                fun([L, C, S, QE], ResAcc) ->
-                    {PrevCount, PrevSum, PrevQE} = maps:get(
-                        L, ResAcc, {0, 0, quantile(Configuration)}
-                    ),
-                    ResAcc#{L => {PrevCount + C, PrevSum + S, quantile_merge(PrevQE, QE)}}
+                fun
+                    ([_, 0, _, _], ResAcc) ->
+                        %% Ignore quantile evaluation if no data are provided
+                        ResAcc;
+                    ([L, C, S, QE], ResAcc) ->
+                        {PrevCount, PrevSum, PrevQE} = maps:get(
+                            L, ResAcc, {0, 0, quantile(Configuration)}
+                        ),
+                        ResAcc#{L => {PrevCount + C, PrevSum + S, quantile_merge(PrevQE, QE)}}
                 end,
                 #{},
                 MFValues
@@ -393,9 +396,13 @@ collect_metrics(Name, {CLabels, Labels, Registry, DU, Configuration}) ->
     #{quantiles := QNs} = Configuration,
     MFValues = load_all_values(Registry, Name),
     ReducedMap = lists:foldl(
-        fun([L, C, S, QE], ResAcc) ->
-            {PrevCount, PrevSum, PrevQE} = maps:get(L, ResAcc, {0, 0, quantile(Configuration)}),
-            ResAcc#{L => {PrevCount + C, PrevSum + S, quantile_merge(PrevQE, QE)}}
+        fun
+            ([_, 0, _, _], ResAcc) ->
+                %% Ignore quantile evaluation if no data are provided
+                ResAcc;
+            ([L, C, S, QE], ResAcc) ->
+                {PrevCount, PrevSum, PrevQE} = maps:get(L, ResAcc, {0, 0, quantile(Configuration)}),
+                ResAcc#{L => {PrevCount + C, PrevSum + S, quantile_merge(PrevQE, QE)}}
         end,
         #{},
         MFValues
