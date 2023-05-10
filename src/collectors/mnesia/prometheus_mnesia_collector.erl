@@ -32,6 +32,12 @@ Collects Mnesia metrics mainly using `mnesia:system_info/1`.
 * `erlang_mnesia_memory_usage_bytes`
   Type: gauge.
   Total number of bytes allocated by all mnesia tables.
+* `erlang_mnesia_tablewise_memory_usage_bytes'
+  Type: gauge.
+  Number of bytes allocated per mnesia table
+* `erlang_mnesia_tablewise_size'
+  Type: gauge.
+  Number of rows present per table
 
 ### Configuration
 
@@ -94,10 +100,6 @@ add_metric_family({Name, Type, Help, Metrics}, Callback) ->
 
 metrics(EnabledMetrics) ->
     {Participants, Coordinators} = get_tm_info(EnabledMetrics),
-    MemoryUsage = get_memory_usage(),
-    TablewiseMemoryUsage = get_tablewise_memory_usage(),
-    TablewiseSize = get_tablewise_size(),
-
     [
         {held_locks, gauge, "Number of held locks.", fun() -> ets:info(mnesia_held_locks, size) end},
         {lock_queue, gauge, "Number of transactions waiting for a lock.", fun() ->
@@ -122,12 +124,14 @@ metrics(EnabledMetrics) ->
             mnesia:system_info(transaction_restarts)
         end},
         {memory_usage_bytes, gauge, "Total number of bytes allocated by all mnesia tables", fun() ->
-                MemoryUsage
+                get_memory_usage()
             end},
         {tablewise_memory_usage_bytes, gauge, "Number of bytes allocated per mnesia table", fun() ->
-                TablewiseMemoryUsage
+                get_tablewise_memory_usage()
             end},
-        {tablewise_size, gauge, "Number of rows present per table", fun() -> TablewiseSize end}
+        {tablewise_size, gauge, "Number of rows present per table", fun() ->
+            get_tablewise_size()
+        end}
     ].
 
 %%====================================================================
