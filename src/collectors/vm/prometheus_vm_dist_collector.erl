@@ -370,6 +370,7 @@ enabled_metrics() ->
 metric_enabled(Name, Metrics) ->
     Metrics =:= all orelse lists:member(Name, Metrics).
 
+-compile(nowarn_untyped_record).
 -include_lib("kernel/include/net_address.hrl").
 
 dist_info() ->
