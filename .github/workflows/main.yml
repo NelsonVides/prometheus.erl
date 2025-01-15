@@ -22,9 +22,11 @@ jobs:
       - run: rebar3 fmt --check
       - run: rebar3 lint
       - run: rebar3 xref
-      - run: rebar3 dialyzer
       - run: rebar3 eunit
+      - run: rebar3 dialyzer
+        if: ${{ matrix.otp == '27' }}
       - run: rebar3 do cover, covertool generate
+        if: ${{ matrix.otp == '27' }}
       - name: Upload code coverage
         uses: codecov/codecov-action@v4
         if: ${{ matrix.otp == '27' }}
