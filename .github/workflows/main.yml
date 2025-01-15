@@ -1,4 +1,4 @@
-name: ci
+name: main
 
 on: [pull_request, workflow_dispatch]
 
@@ -28,7 +28,7 @@ jobs:
       - run: rebar3 do cover, covertool generate
         if: ${{ matrix.otp == '27' }}
       - name: Upload code coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: ${{ matrix.otp == '27' }}
         with:
           files: _build/test/covertool/prometheus.covertool.xml
