@@ -139,12 +139,12 @@ set_default(Registry, Name) ->
     set(Registry, Name, [], undefined).
 
 %% @equiv set(default, Name, [], Value)
--spec set(prometheus_metric:name(), prometheus_model_helpers:prometheus_boolean()) -> ok.
+-spec set(prometheus_metric:name(), prometheus:prometheus_boolean()) -> ok.
 set(Name, Value) ->
     set(default, Name, [], Value).
 
 %% @equiv set(default, Name, LabelValues, Value)
--spec set(prometheus_metric:name(), list(), prometheus_model_helpers:prometheus_boolean()) -> ok.
+-spec set(prometheus_metric:name(), list(), prometheus:prometheus_boolean()) -> ok.
 set(Name, LabelValues, Value) ->
     set(default, Name, LabelValues, Value).
 
@@ -173,7 +173,7 @@ set(Name, LabelValues, Value) ->
     prometheus_registry:registry(),
     prometheus_metric:name(),
     list(),
-    prometheus_model_helpers:prometheus_boolean()
+    prometheus:prometheus_boolean()
 ) -> ok.
 set(Registry, Name, LabelValues, Value0) ->
     Value = prometheus_model_helpers:boolean_value(Value0),

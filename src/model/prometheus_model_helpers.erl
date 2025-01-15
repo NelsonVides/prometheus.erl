@@ -43,43 +43,7 @@
 ]).
 -endif.
 
--export_type([prometheus_boolean/0]).
-
 -include("prometheus_model.hrl").
-
-%%%===================================================================
-%%% Types
-%%%===================================================================
-
--type label_name() :: term().
--type label_value() :: term().
--type label() :: {label_name(), label_value()}.
--type pre_rendered_labels() :: binary().
--type labels() :: [label()] | pre_rendered_labels().
--type value() :: float() | integer() | undefined | infinity.
--type prometheus_boolean() :: boolean() | number() | list() | undefined.
--type gauge() :: value() | {value()} | {labels(), value()}.
--type counter() :: value() | {value()} | {labels(), value()}.
--type untyped() :: value() | {value()} | {labels(), value()}.
--type summary() ::
-    {non_neg_integer(), value()}
-    | {labels(), non_neg_integer(), value()}.
--type buckets() :: nonempty_list({prometheus_buckets:bucket_bound(), non_neg_integer()}).
--type histogram() ::
-    {buckets(), non_neg_integer(), value()}
-    | {labels(), buckets(), non_neg_integer(), value()}.
--type pbool() ::
-    prometheus_boolean()
-    | {prometheus_boolean()}
-    | {labels(), prometheus_boolean()}.
--type tmetric() ::
-    gauge()
-    | counter()
-    | untyped()
-    | summary()
-    | histogram()
-    | pbool().
--type metrics() :: tmetric() | [tmetric()].
 
 %%%===================================================================
 %%% Public API
@@ -124,7 +88,7 @@ metric_name(Name) ->
     Metrics ::
         [prometheus_model:'Metric'()]
         | prometheus_model:'Metric'()
-        | metrics(),
+        | prometheus:metrics(),
     MetricFamily :: prometheus_model:'MetricFamily'().
 create_mf(Name, Help, Type, Metrics0) ->
     Metrics = metrics_from_tuples(Type, Metrics0),
@@ -154,7 +118,7 @@ create_mf(Name, Help, Type, Collector, CollectorData) ->
 %% {@link gauge_metric/1. `lists:map(fun gauge_metric/1, Values)'}.
 %% @end
 -spec gauge_metrics(Values) -> [prometheus_model:'Metric'()] when
-    Values :: [gauge()].
+    Values :: [prometheus:gauge()].
 gauge_metrics(Values) ->
     lists:map(fun gauge_metric/1, Values).
 
@@ -163,7 +127,7 @@ gauge_metrics(Values) ->
 %% <a href="#gauge_metric-2"><tt>gauge_metric(Labels, Value)</tt></a>.
 %% @end
 -spec gauge_metric(Gauge) -> prometheus_model:'Metric'() when
-    Gauge :: gauge().
+    Gauge :: prometheus:gauge().
 gauge_metric({Labels, Value}) -> gauge_metric(Labels, Value);
 gauge_metric({Value}) -> gauge_metric([], Value);
 gauge_metric(Value) -> gauge_metric([], Value).
@@ -172,8 +136,8 @@ gauge_metric(Value) -> gauge_metric([], Value).
 %% Creates gauge metric with `Labels' and `Value'.
 %% @end
 -spec gauge_metric(Labels, Value) -> prometheus_model:'Metric'() when
-    Labels :: labels(),
-    Value :: value().
+    Labels :: prometheus:labels(),
+    Value :: prometheus:value().
 gauge_metric(Labels, Value) ->
     #'Metric'{
         label = label_pairs(Labels),
@@ -184,7 +148,7 @@ gauge_metric(Labels, Value) ->
 %% {@link untyped_metric/1. `lists:map(fun untyped_metric/1, Values)'}.
 %% @end
 -spec untyped_metrics(Values) -> [prometheus_model:'Metric'()] when
-    Values :: [untyped()].
+    Values :: [prometheus:untyped()].
 untyped_metrics(Values) ->
     lists:map(fun untyped_metric/1, Values).
 
@@ -193,7 +157,7 @@ untyped_metrics(Values) ->
 %% <a href="#untyped_metric-2"><tt>untyped_metric(Labels, Value)</tt></a>.
 %% @end
 -spec untyped_metric(Untyped) -> prometheus_model:'Metric'() when
-    Untyped :: untyped().
+    Untyped :: prometheus:untyped().
 untyped_metric({Labels, Value}) -> untyped_metric(Labels, Value);
 untyped_metric({Value}) -> untyped_metric([], Value);
 untyped_metric(Value) -> untyped_metric([], Value).
@@ -202,8 +166,8 @@ untyped_metric(Value) -> untyped_metric([], Value).
 %% Creates untyped metric with `Labels' and `Value'.
 %% @end
 -spec untyped_metric(Labels, Value) -> prometheus_model:'Metric'() when
-    Labels :: labels(),
-    Value :: value().
+    Labels :: prometheus:labels(),
+    Value :: prometheus:value().
 untyped_metric(Labels, Value) ->
     #'Metric'{
         label = label_pairs(Labels),
@@ -214,7 +178,7 @@ untyped_metric(Labels, Value) ->
 %% {@link boolean_metric/1. `lists:map(fun boolean_metric/1, Values)'}.
 %% @end
 -spec boolean_metrics(Values) -> [prometheus_model:'Metric'()] when
-    Values :: [pbool()].
+    Values :: [prometheus:pbool()].
 boolean_metrics(Values) ->
     lists:map(fun boolean_metric/1, Values).
 
@@ -223,7 +187,7 @@ boolean_metrics(Values) ->
 %% <a href="#boolean_metric-2"><tt>boolean_metric(Labels, Value)</tt></a>.
 %% @end
 -spec boolean_metric(Boolean) -> prometheus_model:'Metric'() when
-    Boolean :: pbool().
+    Boolean :: prometheus:pbool().
 boolean_metric({Labels, Value}) -> boolean_metric(Labels, Value);
 boolean_metric({Value}) -> boolean_metric([], Value);
 boolean_metric(Value) -> boolean_metric([], Value).
@@ -232,15 +196,15 @@ boolean_metric(Value) -> boolean_metric([], Value).
 %% Creates boolean metric with `Labels' and `Value'.
 %% @end
 -spec boolean_metric(Labels, Value) -> prometheus_model:'Metric'() when
-    Labels :: labels(),
-    Value :: prometheus_boolean().
+    Labels :: prometheus:labels(),
+    Value :: prometheus:prometheus_boolean().
 boolean_metric(Labels, Value0) ->
     Value = boolean_value(Value0),
     untyped_metric(Labels, Value).
 
 %% @private
 -spec boolean_value(Value) -> RealValue when
-    Value :: prometheus_boolean(),
+    Value :: prometheus:prometheus_boolean(),
     RealValue :: undefined | 0 | 1.
 boolean_value(Value) ->
     case Value of
@@ -258,7 +222,7 @@ boolean_value(Value) ->
 %% @doc Equivalent to
 %% {@link counter_metric/1. `lists:map(fun counter_metric/1, Specs)'}.
 -spec counter_metrics(Specs) -> [prometheus_model:'Metric'()] when
-    Specs :: [counter()].
+    Specs :: [prometheus:counter()].
 counter_metrics(Specs) ->
     lists:map(fun counter_metric/1, Specs).
 
@@ -267,7 +231,7 @@ counter_metrics(Specs) ->
 %% <a href="#counter_metric-2"><tt>counter_metric(Labels, Value)</tt></a>.
 %% @end
 -spec counter_metric(Spec) -> prometheus_model:'Metric'() when
-    Spec :: counter().
+    Spec :: prometheus:counter().
 counter_metric({Labels, Value}) -> counter_metric(Labels, Value);
 counter_metric({Value}) -> counter_metric([], Value);
 counter_metric(Value) -> counter_metric([], Value).
@@ -276,8 +240,8 @@ counter_metric(Value) -> counter_metric([], Value).
 %% Creates counter metric with `Labels' and `Value'.
 %% @end
 -spec counter_metric(Labels, Value) -> prometheus_model:'Metric'() when
-    Labels :: labels(),
-    Value :: value().
+    Labels :: prometheus:labels(),
+    Value :: prometheus:value().
 counter_metric(Labels, Value) ->
     #'Metric'{
         label = label_pairs(Labels),
@@ -287,7 +251,7 @@ counter_metric(Labels, Value) ->
 %% @doc Equivalent to
 %% {@link summary_metric/1. `lists:map(fun summary_metric/1, Specs)'}.
 -spec summary_metrics(Specs) -> [prometheus_model:'Metric'()] when
-    Specs :: [summary()].
+    Specs :: [prometheus:summary()].
 summary_metrics(Specs) ->
     lists:map(fun summary_metric/1, Specs).
 
@@ -296,7 +260,7 @@ summary_metrics(Specs) ->
 %% <a href="#summary_metric-3"><tt>summary_metric(Labels, Count, Sum)</tt></a>.
 %% @end
 -spec summary_metric(Summary) -> prometheus_model:'Metric'() when
-    Summary :: summary().
+    Summary :: prometheus:summary().
 summary_metric({Labels, Count, Sum, Quantiles}) when is_list(Quantiles) ->
     summary_metric(Labels, Count, Sum, Quantiles);
 summary_metric({Count, Sum, Quantiles}) when is_list(Quantiles) ->
@@ -309,14 +273,14 @@ summary_metric({Count, Sum}) ->
 %% @equiv summary_metric([], Count, Sum)
 -spec summary_metric(Count, Sum) -> prometheus_model:'Metric'() when
     Count :: non_neg_integer(),
-    Sum :: value().
+    Sum :: prometheus:value().
 summary_metric(Count, Sum) ->
     summary_metric([], Count, Sum).
 
 %% @equiv summary_metric([], Count, Sum, [])
 -spec summary_metric(Count, Sum, Quantiles) -> prometheus_model:'Metric'() when
     Count :: non_neg_integer(),
-    Sum :: value(),
+    Sum :: prometheus:value(),
     Quantiles :: list().
 summary_metric(Labels, Count, Sum) ->
     summary_metric(Labels, Count, Sum, []).
@@ -325,9 +289,9 @@ summary_metric(Labels, Count, Sum) ->
 %% Creates summary metric with `Labels', `Count' and `Sum'.
 %% @end
 -spec summary_metric(Labels, Count, Sum, Quantiles) -> prometheus_model:'Metric'() when
-    Labels :: labels(),
+    Labels :: prometheus:labels(),
     Count :: non_neg_integer(),
-    Sum :: value(),
+    Sum :: prometheus:value(),
     Quantiles :: list().
 summary_metric(Labels, Count, Sum, Quantiles) ->
     #'Metric'{
@@ -343,7 +307,7 @@ summary_metric(Labels, Count, Sum, Quantiles) ->
 %% {@link histogram_metric/1. `lists:map(fun histogram_metric/1, Specs)'}.
 %% @end
 -spec histogram_metrics(Specs) -> [prometheus_model:'Metric'()] when
-    Specs :: [histogram()].
+    Specs :: [prometheus:histogram()].
 histogram_metrics(Specs) ->
     lists:map(fun histogram_metric/1, Specs).
 
@@ -353,7 +317,7 @@ histogram_metrics(Specs) ->
 %% <tt>histogram_metric(Labels, Buckets, Count, Sum)</tt></a>.
 %% @end
 -spec histogram_metric(Histogram) -> prometheus_model:'Metric'() when
-    Histogram :: histogram().
+    Histogram :: prometheus:histogram().
 histogram_metric({Labels, Buckets, Count, Sum}) ->
     histogram_metric(Labels, Buckets, Count, Sum);
 histogram_metric({Buckets, Count, Sum}) ->
@@ -361,9 +325,9 @@ histogram_metric({Buckets, Count, Sum}) ->
 
 %% @equiv histogram_metric([], Buckets, Count, Sum)
 -spec histogram_metric(Buckets, Count, Sum) -> prometheus_model:'Metric'() when
-    Buckets :: buckets(),
+    Buckets :: prometheus:buckets(),
     Count :: non_neg_integer(),
-    Sum :: value().
+    Sum :: prometheus:value().
 histogram_metric(Buckets, Count, Sum) ->
     histogram_metric([], Buckets, Count, Sum).
 
@@ -371,11 +335,11 @@ histogram_metric(Buckets, Count, Sum) ->
 %% Creates histogram metric with `Labels', `Buckets', `Count' and `Sum'.
 %% @end
 -spec histogram_metric(Labels, Buckets, Count, Sum) -> Metric when
-    Labels :: labels(),
+    Labels :: prometheus:labels(),
     Buckets :: [{Bound, Count}],
     Bound :: prometheus_buckets:bucket_bound(),
     Count :: non_neg_integer(),
-    Sum :: value(),
+    Sum :: prometheus:value(),
     Metric :: prometheus_model:'Metric'().
 histogram_metric(Labels, Buckets, Count, Sum) ->
     Label = label_pairs(Labels),
@@ -404,7 +368,7 @@ histogram_metric(Labels, Buckets, Count, Sum) ->
 %% WARNING Works only for text format, protobuf format export will
 %% fail with an error.
 -spec label_pairs(Labels) -> [prometheus_model:'LabelPair'()] when
-    Labels :: labels().
+    Labels :: prometheus:labels().
 label_pairs(B) when is_binary(B) ->
     B;
 label_pairs(Labels) ->
@@ -413,7 +377,7 @@ label_pairs(Labels) ->
 %% @doc
 %% Creates `prometheus_model:'LabelPair'()' from {Name, Value} tuple.
 %% @end
--spec label_pair(label()) -> prometheus_model:'LabelPair'().
+-spec label_pair(prometheus:label()) -> prometheus_model:'LabelPair'().
 label_pair({Name, Value}) ->
     #'LabelPair'{
         name = ensure_binary_or_string(Name),

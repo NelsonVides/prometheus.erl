@@ -15,7 +15,7 @@
     | {exponential, number(), number(), pos_integer()}
     | buckets().
 
--export_type([bucket_bound/0, buckets/0]).
+-export_type([bucket_bound/0, buckets/0, config/0]).
 
 -spec new() -> buckets().
 new() ->

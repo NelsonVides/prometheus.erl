@@ -126,6 +126,8 @@
     | undefined
     | false.
 
+-export_type([duration_unit/0]).
+
 %% @private
 -spec duration_unit_from_string(binary()) -> duration_unit() | undefined.
 duration_unit_from_string(Str) ->
