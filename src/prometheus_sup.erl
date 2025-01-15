@@ -53,7 +53,7 @@ register_collectors() ->
 register_metrics() ->
     [declare_metric(Decl) || Decl <- default_metrics()].
 
--spec register_metrics([term()]) -> ok.
+-spec register_metrics([term()]) -> [boolean()].
 register_metrics(Metrics) ->
     DefaultMetrics0 = default_metrics(),
     DefaultMetrics1 = lists:usort(DefaultMetrics0 ++ Metrics),

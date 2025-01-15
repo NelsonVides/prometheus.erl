@@ -330,8 +330,7 @@ collect_mf(Registry, Callback) ->
     ok.
 
 %% @private
--spec collect_metrics(prometheus_metric:name(), prometheus_collector:collect_mf_callback()) ->
-    [prometheus_model:'Metric'()].
+-spec collect_metrics(prometheus_metric:name(), tuple()) -> [prometheus_model:'Metric'()].
 collect_metrics(Name, {CLabels, Labels, Registry}) ->
     [
         prometheus_model_helpers:boolean_metric(

@@ -278,10 +278,10 @@ summary_metric(Count, Sum) ->
     summary_metric([], Count, Sum).
 
 %% @equiv summary_metric([], Count, Sum, [])
--spec summary_metric(Count, Sum, Quantiles) -> prometheus_model:'Metric'() when
+-spec summary_metric(Labels, Count, Sum) -> prometheus_model:'Metric'() when
+    Labels :: prometheus:labels(),
     Count :: non_neg_integer(),
-    Sum :: prometheus:value(),
-    Quantiles :: list().
+    Sum :: prometheus:value().
 summary_metric(Labels, Count, Sum) ->
     summary_metric(Labels, Count, Sum, []).
 

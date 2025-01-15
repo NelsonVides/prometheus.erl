@@ -367,7 +367,7 @@ collect_mf(Registry, Callback) ->
     ok.
 
 %% @private
--spec collect_metrics(prometheus_metric:name(), prometheus_collector:collect_mf_callback()) ->
+-spec collect_metrics(prometheus_metric:name(), tuple()) ->
     [prometheus_model:'Metric'()].
 collect_metrics(Name, {CLabels, Labels, Registry}) ->
     MFValues = load_all_values(Registry, Name),

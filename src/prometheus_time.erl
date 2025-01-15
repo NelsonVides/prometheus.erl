@@ -122,19 +122,19 @@
     | seconds
     | minutes
     | hours
-    | days
-    | undefined
-    | false.
+    | days.
 
--export_type([duration_unit/0]).
+-type maybe_duration_unit() :: false | undefined | duration_unit().
+
+-export_type([duration_unit/0, maybe_duration_unit/0]).
 
 %% @private
--spec duration_unit_from_string(binary()) -> duration_unit() | undefined.
+-spec duration_unit_from_string(string()) -> duration_unit() | undefined.
 duration_unit_from_string(Str) ->
     duration_unit_from_string(Str, ?DURATION_UNITS).
 
 %% @private
--spec validate_duration_unit(duration_unit()) -> duration_unit().
+-spec validate_duration_unit(maybe_duration_unit()) -> maybe_duration_unit().
 validate_duration_unit(false) ->
     false;
 validate_duration_unit(undefined) ->

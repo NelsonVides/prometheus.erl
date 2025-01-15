@@ -40,11 +40,16 @@
 -export_type([
     label/0,
     labels/0,
+    label_value/0,
     value/0,
     gauge/0,
     counter/0,
     summary/0,
+    histogram/0,
+    buckets/0,
     metrics/0,
+    untyped/0,
+    pbool/0,
     prometheus_boolean/0
 ]).
 
