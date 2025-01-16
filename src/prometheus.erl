@@ -1,8 +1,3 @@
-%%%-------------------------------------------------------------------
-%% @doc prometheus public API
-%% @hidden
-%%%-------------------------------------------------------------------
-
 -module(prometheus).
 
 -behaviour(application).
@@ -55,7 +50,6 @@
 
 -export([start/2, stop/1]).
 -export([start/0, stop/0]).
--define(APP, ?MODULE).
 
 -spec start(application:start_type(), term()) -> supervisor:startlink_ret().
 start(_StartType, _StartArgs) ->
@@ -65,10 +59,12 @@ start(_StartType, _StartArgs) ->
 stop(_State) ->
     ok.
 
+-doc false.
 -spec start() -> ok | {error, term()}.
 start() ->
-    application:start(?APP).
+    application:start(?MODULE).
 
+-doc false.
 -spec stop() -> ok | {error, term()}.
 stop() ->
-    application:stop(?APP).
+    application:stop(?MODULE).

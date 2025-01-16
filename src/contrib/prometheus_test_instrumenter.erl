@@ -1,5 +1,5 @@
-%% @private
 -module(prometheus_test_instrumenter).
+-moduledoc false.
 
 -behaviour(prometheus_instrumenter).
 

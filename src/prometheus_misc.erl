@@ -1,4 +1,3 @@
-%% @hidden
 %% behaviour_modules original Copyright message
 %% all other code is under MIT
 %%
@@ -7,15 +6,10 @@
 %% file, You can obtain one at https://mozilla.org/MPL/2.0/.
 %%
 %% Copyright (c) 2007-2021 VMware, Inc. or its affiliates.  All rights reserved.
-%%
-
 -module(prometheus_misc).
+-moduledoc false.
 
 -export([behaviour_modules/1]).
-
-%%====================================================================
-%% Public API
-%%====================================================================
 
 -spec behaviour_modules(Behaviour :: atom()) -> [atom()] | [].
 behaviour_modules(Behaviour) ->
@@ -25,10 +19,6 @@ behaviour_modules(Behaviour) ->
             all_module_attributes(behaviour),
         lists:member(Behaviour, Behaviours)
     ].
-
-%%====================================================================
-%% Private Parts
-%%====================================================================
 
 all_module_attributes(Name) ->
     Targets =

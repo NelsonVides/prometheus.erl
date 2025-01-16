@@ -1,6 +1,6 @@
 {application, prometheus, [
     {description, "Prometheus.io client in Erlang"},
-    {vsn, "4.11.0"},
+    {vsn, git},
     {registered, []},
     {mod, {prometheus, []}},
     {applications, [
@@ -9,14 +9,13 @@
     ]},
     {env, []},
     {modules, []},
-
     {description, "Prometheus monitoring system and time series database client in Erlang."},
-    {maintainers, ["Ilya Khaprov"]},
+    {maintainers, ["Ilya Khaprov, Erlang Solutions"]},
     {licenses, ["MIT"]},
     {links, [
+        {"Github", "https://github.com/NelsonVides/prometheus.erl"},
         {"Cowboy exporter/instrumenter", "https://hex.pm/packages/prometheus_cowboy"},
         {"Ecto Instrumenter", "https://hex.pm/packages/prometheus_ecto"},
-        {"Github", "https://github.com/deadtrickster/prometheus.erl"},
         {"Inets HTTPD Exporter", "https://hex.pm/packages/prometheus_httpd"},
         {"Phoenix Instrumenter", "https://hex.pm/packages/prometheus_phoenix"},
         {"Plugs Instrumenter/Exporter", "https://hex.pm/packages/prometheus_plugs"},

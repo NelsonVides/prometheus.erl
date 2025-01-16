@@ -1,13 +1,7 @@
-%%%-------------------------------------------------------------------
-%% @doc prometheus top level supervisor.
-%% @hidden
-%%%-------------------------------------------------------------------
-
 -module(prometheus_sup).
+-moduledoc false.
 
-%% API
 -export([start_link/0]).
-%% Supervisor callbacks
 -export([init/1]).
 -export([register_metrics/1]).
 
@@ -15,11 +9,9 @@
 
 -include("prometheus.hrl").
 
--define(SERVER, ?MODULE).
-
 -spec start_link() -> supervisor:startlink_ret().
 start_link() ->
-    supervisor:start_link({local, ?SERVER}, ?MODULE, []).
+    supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 -spec init([]) -> {ok, {supervisor:sup_flags(), [supervisor:child_spec()]}}.
 init([]) ->

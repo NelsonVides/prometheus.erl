@@ -23,6 +23,8 @@ jobs:
       - run: rebar3 lint
       - run: rebar3 xref
       - run: rebar3 eunit
+      - run: rebar3 ex_doc
+        if: ${{ matrix.otp == '27' }}
       - run: rebar3 dialyzer
         if: ${{ matrix.otp == '27' }}
       - run: rebar3 do cover, covertool generate
