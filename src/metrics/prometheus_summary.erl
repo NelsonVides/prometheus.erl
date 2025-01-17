@@ -81,7 +81,7 @@ Example:
 Creates a summary using `Spec`.
 
 Raises:
-* `{missing_metric_spec_key, Key, Spec}` error if required `Soec` key is missing.
+* `{missing_metric_spec_key, Key, Spec}` error if required `Spec` key is missing.
 * `{invalid_metric_name, Name, Message}` error if metric `Name` is invalid.
 * `{invalid_metric_help, Help, Message}` error if metric `Help` is invalid.
 * `{invalid_metric_labels, Labels, Message}` error if `Labels` isn't a list.
@@ -98,7 +98,7 @@ new(Spec) ->
 Creates a summary using `Spec`. If a summary with the same `Spec` exists returns `false`.
 
 Raises:
-* `{missing_metric_spec_key, Key, Spec}` error if required `Soec` key is missing.
+* `{missing_metric_spec_key, Key, Spec}` error if required `Spec` key is missing.
 * `{invalid_metric_name, Name, Message}` error if metric `Name` is invalid.
 * `{invalid_metric_help, Help, Message}` error if metric `Help` is invalid.
 * `{invalid_metric_labels, Labels, Message}` error if `Labels` isn't a list.
