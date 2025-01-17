@@ -23,7 +23,6 @@ Example:
     prometheus_summary:observe(response_size_bytes, Size).
 
 ```
-{: lang=erlang }
 """.
 
 %%% metric
@@ -63,19 +62,11 @@ Example:
 -behaviour(prometheus_metric).
 -behaviour(prometheus_collector).
 
-%%====================================================================
-%% Macros
-%%====================================================================
-
 -define(TABLE, ?PROMETHEUS_SUMMARY_TABLE).
 -define(ISUM_POS, 3).
 -define(FSUM_POS, 4).
 -define(COUNTER_POS, 2).
 -define(WIDTH, 16).
-
-%%====================================================================
-%% Metric API
-%%====================================================================
 
 -doc """
 Creates a summary using `Spec`.
