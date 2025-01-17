@@ -7,7 +7,7 @@ All metrics include a label 'peer' that indicates which distributed connection t
 
 ### Exported metrics
 
-Metrics pertaining to processes may apply to three different types of proccesses depending on
+Metrics pertaining to processes may apply to three different types of processes depending on
 the distribution transport: `type=\"dist\"`, `type=\"tls_connection\"` or `type=\"tls_sender\"`.
 
 * `erlang_vm_dist_recv_bytes`
