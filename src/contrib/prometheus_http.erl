@@ -1,4 +1,5 @@
 -module(prometheus_http).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc "HTTP instrumentation helpers".
 
 -export([microseconds_duration_buckets/0, status_class/1]).
@@ -47,7 +48,7 @@ Returns status class for the http status code `SCode`.
 
 ```erlang
 2> prometheus_http:status_class(202).
-"success"
+\"success\"
 
 ```
 

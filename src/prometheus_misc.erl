@@ -7,6 +7,7 @@
 %%
 %% Copyright (c) 2007-2021 VMware, Inc. or its affiliates.  All rights reserved.
 -module(prometheus_misc).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc false.
 
 -export([behaviour_modules/1]).

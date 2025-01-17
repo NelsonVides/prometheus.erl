@@ -1,15 +1,16 @@
 -module(prometheus_vm_memory_collector).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Collects information about memory dynamically allocated by the Erlang emulator using
 `erlang:memory/0`, also provides basic (D)ETS statistics.
 
 ### Exported metrics
 
-* `erlang_vm_memory_atom_bytes_total{usage="free|used"}`
+* `erlang_vm_memory_atom_bytes_total{usage=\"free|used\"}`
   Type: gauge.
   The total amount of memory currently allocated for atoms.
     This memory is part of the memory presented as system memory.
-* `erlang_vm_memory_bytes_total{kind="system|processes"}`
+* `erlang_vm_memory_bytes_total{kind=\"system|processes\"}`
   Type: gauge.
   The total amount of memory currently allocated.
     This is the same as the sum of the memory size for processes and system.
@@ -19,10 +20,10 @@ Collects information about memory dynamically allocated by the Erlang emulator u
 * `erlang_vm_memory_ets_tables`
   Type: gauge.
   Erlang VM ETS Tables count.
-* `erlang_vm_memory_processes_bytes_total{usage="free|used"}`
+* `erlang_vm_memory_processes_bytes_total{usage=\"free|used\"}`
   Type: gauge.
   The total amount of memory currently allocated for the Erlang processes.
-* `erlang_vm_memory_system_bytes_total{usage="atom|binary|code|ets|other"}`
+* `erlang_vm_memory_system_bytes_total{usage=\"atom|binary|code|ets|other\"}`
   Type: gauge.
   The total amount of memory currently allocated for the emulator that is not directly related
     to any Erlang process. Memory presented as processes is not included in this memory.

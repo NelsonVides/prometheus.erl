@@ -1,4 +1,5 @@
 -module(prometheus_protobuf_format).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Serializes Prometheus registry using [protocol buffer format](http://bit.ly/2cxSuJP).
 """.

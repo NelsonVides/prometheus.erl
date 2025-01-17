@@ -1,4 +1,6 @@
 -module(prometheus_format).
+-compile({parse_transform, prometheus_pt}).
+
 -moduledoc """
 Module that implements this behaviour can be used as `foramt` parameter for exporters.
 

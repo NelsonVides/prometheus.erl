@@ -1,4 +1,5 @@
 -module(prometheus_time).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Measuring time intervals with Prometheus.erl.
 Measuring time intervals is trivial - you just have to be sure you are using monotonic time source.

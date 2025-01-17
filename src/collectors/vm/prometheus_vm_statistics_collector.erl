@@ -1,4 +1,5 @@
 -module(prometheus_vm_statistics_collector).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Collects Erlang VM metrics using `erlang:statistics/1`.
 

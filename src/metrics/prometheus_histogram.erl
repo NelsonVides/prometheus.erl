@@ -1,4 +1,5 @@
 -module(prometheus_histogram).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 A Histogram tracks the size and number of events in buckets.
 You can use Histograms for aggregatable calculation of quantiles.
@@ -24,17 +25,17 @@ setup() ->
     prometheus_histogram:declare([{name, http_request_duration_milliseconds},
                                   {labels, [method]},
                                   {buckets, [100, 300, 500, 750, 1000]},
-                                  {help, "Http Request execution time."}]).
+                                  {help, \"Http Request execution time.\"}]).
 
 instrument(Time, Method) ->
     %% Time must be in native units, otherwise duration_unit must be false
     prometheus_histogram:observe(http_request_duration_milliseconds, [Method], Time).
 ```
 
-The `prometheus_histogram:observe_n/3,4,5` adds limited support for the "weighted" histograms.
-It accepts the extra integer argument "Count" to update the number of observations in the bucket
+The `prometheus_histogram:observe_n/3,4,5` adds limited support for the \"weighted\" histograms.
+It accepts the extra integer argument \"Count\" to update the number of observations in the bucket
 by adding that number. This allows for better accuracy in the case of irregular measurements,
-assuming that the "Count" conveys the observation time interval (for example,
+assuming that the \"Count\" conveys the observation time interval (for example,
 the number of time ticks when the recent value was observed).
 """.
 
@@ -114,7 +115,7 @@ Raises:
 * `{invalid_buckets, Buckets, Message}` error if `Buckets` aren't in increasing order.
 * `{invalid_bound, Bound}` error if `Bound` isn't a number.
 """.
--spec new(prometheus_metric_spec:spec()) -> ok.
+-spec new(prometheus_metric:spec()) -> ok.
 new(Spec) ->
     Spec1 = validate_histogram_spec(Spec),
     prometheus_metric:insert_new_mf(?TABLE, ?MODULE, Spec1).
@@ -139,7 +140,7 @@ Raises:
 * `{invalid_buckets, Buckets, Message}` error if `Buckets` aren't in increasing order.
 * `{invalid_bound, Bound}` error if `Bound` isn't a number.
 """.
--spec declare(prometheus_metric_spec:spec()) -> boolean().
+-spec declare(prometheus_metric:spec()) -> boolean().
 declare(Spec) ->
     Spec1 = validate_histogram_spec(Spec),
     prometheus_metric:insert_mf(?TABLE, ?MODULE, Spec1).

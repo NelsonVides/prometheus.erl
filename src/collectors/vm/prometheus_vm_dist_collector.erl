@@ -1,4 +1,5 @@
 -module(prometheus_vm_dist_collector).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Collects information about the sockets and processes involved in the Erlang distribution mechanism.
 
@@ -7,7 +8,7 @@ All metrics include a label 'peer' that indicates which distributed connection t
 ### Exported metrics
 
 Metrics pertaining to processes may apply to three different types of proccesses depending on
-the distribution transport: `type="dist"`, `type="tls_connection"` or `type="tls_sender"`.
+the distribution transport: `type=\"dist\"`, `type=\"tls_connection\"` or `type=\"tls_sender\"`.
 
 * `erlang_vm_dist_recv_bytes`
   Type: gauge.

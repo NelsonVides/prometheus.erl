@@ -1,4 +1,5 @@
 -module(prometheus_mnesia).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc "Mnesia instrumentation helpers.".
 
 -export([table_disk_size/1, table_disk_size/2, tm_info/0]).

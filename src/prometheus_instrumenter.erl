@@ -1,4 +1,5 @@
 -module(prometheus_instrumenter).
+-compile({parse_transform, prometheus_pt}).
 
 -export([enabled_instrumenters/0, setup/1]).
 

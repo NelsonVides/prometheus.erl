@@ -1,4 +1,5 @@
 -module(prometheus_metric_spec).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc false.
 
 -export([

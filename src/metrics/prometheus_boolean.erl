@@ -1,4 +1,5 @@
 -module(prometheus_boolean).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Boolean metric, to report booleans and flags.
 
@@ -16,7 +17,7 @@ Example:
 setup() ->
     prometheus_boolean:declare([{name, app_fuse_state},
                                 {labels, [name]}, %% fuse name
-                                {help, "State of various app fuses."}]),
+                                {help, \"State of various app fuses.\"}]),
 
 fuse_event(Fuse, Event) ->
     case Event of
@@ -79,7 +80,7 @@ Raises:
 * `{invalid_label_name, Name, Message}` error if `Name` isn't a valid label name.
 * `{mf_already_exists, {Registry, Name}, Message}` error if a boolean with the same `Spec` already exists.
 """.
--spec new(prometheus_metric_spec:spec()) -> ok.
+-spec new(prometheus_metric:spec()) -> ok.
 new(Spec) ->
     prometheus_metric:insert_new_mf(?TABLE, ?MODULE, Spec).
 
@@ -96,7 +97,7 @@ Raises:
 * `{invalid_metric_labels, Labels, Message}` error if `Labels` isn't a list.
 * `{invalid_label_name, Name, Message}` error if `Name` isn't a valid label name.
 """.
--spec declare(prometheus_metric_spec:spec()) -> boolean().
+-spec declare(prometheus_metric:spec()) -> boolean().
 declare(Spec) ->
     prometheus_metric:insert_mf(?TABLE, ?MODULE, Spec).
 
@@ -137,7 +138,7 @@ set(Name, LabelValues, Value) ->
 -doc """
 Sets the boolean identified by `Registry`, `Name` and `LabelValues` to `Value`.
 
-Valid "truthy" values:
+Valid truthy values:
 
 * `true`;
 * `false`;

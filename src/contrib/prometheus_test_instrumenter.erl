@@ -1,4 +1,5 @@
 -module(prometheus_test_instrumenter).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc false.
 
 -behaviour(prometheus_instrumenter).

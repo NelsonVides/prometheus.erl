@@ -1,4 +1,5 @@
 -module(prometheus_registry).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 A registry of Collectors.
 

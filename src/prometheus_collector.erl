@@ -1,4 +1,6 @@
 -module(prometheus_collector).
+-compile({parse_transform, prometheus_pt}).
+
 -moduledoc """
 A collector for a set of metrics.
 
@@ -29,9 +31,9 @@ deregister_cleanup(_) -> ok.
 collect_mf(_Registry, Callback) ->
     Memory = erlang:memory(),
     Callback(create_gauge(erlang_vm_bytes_total,
-                          "The total amount of memory currently allocated. "
-                          "This is the same as the sum of the memory size "
-                          "for processes and system.",
+                          \"The total amount of memory currently allocated. \"
+                          \"This is the same as the sum of the memory size \"
+                          \"for processes and system.\",
                           Memory)),
     ok.
 

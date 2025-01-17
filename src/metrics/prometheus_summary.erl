@@ -1,4 +1,5 @@
 -module(prometheus_summary).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Summary metric, to track the size of events.
 
@@ -11,9 +12,9 @@ Example:
 
   setup() ->
     prometheus_summary:declare([{name, request_size_bytes},
-                                {help, "Request size in bytes."}]),
+                                {help, \"Request size in bytes.\"}]),
     prometheus_summary:declare([{name, response_size_bytes},
-                                {help, "Response size in bytes."}]).
+                                {help, \"Response size in bytes.\"}]).
 
   observe_request(Size) ->
     prometheus_summary:observe(request_size_bytes, Size).
@@ -88,7 +89,7 @@ Raises:
 * `{invalid_value_error, Value, Message}` error if `duration_unit` is unknown or doesn't match metric name.
 * `{mf_already_exists, {Registry, Name}, Message}` error if a summary with the same `Spec` already exists.
 """.
--spec new(prometheus_metric_spec:spec()) -> ok.
+-spec new(prometheus_metric:spec()) -> ok.
 new(Spec) ->
     validate_summary_spec(Spec),
     prometheus_metric:insert_new_mf(?TABLE, ?MODULE, Spec).
@@ -104,7 +105,7 @@ Raises:
 * `{invalid_label_name, Name, Message}` error if `Name` isn't a valid label name.
 * `{invalid_value_error, Value, MessagE}` error if `duration_unit` is unknown or doesn't match metric name.
 """.
--spec declare(prometheus_metric_spec:spec()) -> boolean().
+-spec declare(prometheus_metric:spec()) -> boolean().
 declare(Spec) ->
     Spec1 = validate_summary_spec(Spec),
     prometheus_metric:insert_mf(?TABLE, ?MODULE, Spec1).

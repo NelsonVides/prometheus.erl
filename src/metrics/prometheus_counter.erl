@@ -1,8 +1,9 @@
 -module(prometheus_counter).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Counter is a Metric that represents a single numerical value that only ever goes up.
 That implies that it cannot be used to count items whose number can also go down, e. g.
-the number of currently running processes. Those "counters" are represented by `m:prometheus_gauge`.
+the number of currently running processes. Those \"counters\" are represented by `m:prometheus_gauge`.
 
 A Counter is typically used to count requests served, tasks completed, errors occurred, etc.
 
@@ -36,7 +37,7 @@ Example:
 
 setup() ->
     prometheus_counter:declare([{name, my_service_requests_total},
-                                {help, "Requests count"},
+                                {help, \"Requests count\"},
                                 {labels, caller}]).
 
 inc(Caller) ->
@@ -96,7 +97,7 @@ Raises:
 * `{invalid_label_name, Name, Message}` error if `Name` isn't a valid label name.
 * `{mf_already_exists, {Registry, Name}, Message}` error if a counter with the same `Spec` already exists.
 """.
--spec new(prometheus_metric_spec:spec()) -> ok.
+-spec new(prometheus_metric:spec()) -> ok.
 new(Spec) ->
     prometheus_metric:insert_new_mf(?TABLE, ?MODULE, Spec).
 
@@ -111,7 +112,7 @@ Raises:
 * `{invalid_metric_labels, Labels, Message}` error if `Labels` isn't a list.
 * `{invalid_label_name, Name, Message}` error if `Name` isn't a valid label name.
 """.
--spec declare(prometheus_metric_spec:spec()) -> boolean().
+-spec declare(prometheus_metric:spec()) -> boolean().
 declare(Spec) ->
     prometheus_metric:insert_mf(?TABLE, ?MODULE, Spec).
 

@@ -1,4 +1,5 @@
 -module(prometheus_vm_msacc_collector).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Collects microstate accounting metrics using
 [`erlang:statistics(microstate_accounting)`]

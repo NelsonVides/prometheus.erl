@@ -1,4 +1,5 @@
 -module(prometheus).
+-compile({parse_transform, prometheus_pt}).
 
 -behaviour(application).
 

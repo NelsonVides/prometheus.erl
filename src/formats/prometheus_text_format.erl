@@ -1,4 +1,5 @@
 -module(prometheus_text_format).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Serializes Prometheus registry using the latest [text format](http://bit.ly/2cxSuJP).
 
@@ -7,14 +8,14 @@ Example output:
 ```text
 # TYPE http_request_duration_milliseconds histogram
 # HELP http_request_duration_milliseconds Http Request execution time
-http_request_duration_milliseconds_bucket{method="post",le="100"} 0
-http_request_duration_milliseconds_bucket{method="post",le="300"} 1
-http_request_duration_milliseconds_bucket{method="post",le="500"} 3
-http_request_duration_milliseconds_bucket{method="post",le="750"} 4
-http_request_duration_milliseconds_bucket{method="post",le="1000"} 5
-http_request_duration_milliseconds_bucket{method="post",le="+Inf"} 6
-http_request_duration_milliseconds_count{method="post"} 6
-http_request_duration_milliseconds_sum{method="post"} 4350
+http_request_duration_milliseconds_bucket{method=\"post\",le=\"100\"} 0
+http_request_duration_milliseconds_bucket{method=\"post\",le=\"300\"} 1
+http_request_duration_milliseconds_bucket{method=\"post\",le=\"500\"} 3
+http_request_duration_milliseconds_bucket{method=\"post\",le=\"750\"} 4
+http_request_duration_milliseconds_bucket{method=\"post\",le=\"1000\"} 5
+http_request_duration_milliseconds_bucket{method=\"post\",le=\"+Inf\"} 6
+http_request_duration_milliseconds_count{method=\"post\"} 6
+http_request_duration_milliseconds_sum{method=\"post\"} 4350
 ```
 """.
 
@@ -61,7 +62,7 @@ format(Registry) ->
     Str.
 
 -doc """
-Escapes the backslash (\\), double-quote ("), and line feed (\\n) characters
+Escapes the backslash (\\), double-quote (\"), and line feed (\\n) characters
 """.
 -spec escape_label_value(binary() | iolist()) -> binary().
 escape_label_value(LValue) when is_binary(LValue) ->

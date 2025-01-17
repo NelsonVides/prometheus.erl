@@ -1,4 +1,5 @@
 -module(prometheus_mnesia_collector).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Collects Mnesia metrics mainly using `mnesia:system_info/1`.
 

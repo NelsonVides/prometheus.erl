@@ -1,4 +1,5 @@
 -module(prometheus_buckets).
+-compile({parse_transform, prometheus_pt}).
 
 -export([new/0, new/1, position/2, default/0]).
 

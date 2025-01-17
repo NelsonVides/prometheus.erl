@@ -1,4 +1,5 @@
 -module(prometheus_sup).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc false.
 
 -export([start_link/0]).

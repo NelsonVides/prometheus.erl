@@ -1,11 +1,12 @@
 -module(prometheus_gauge).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Gauge metric, to report instantaneous values.
 
 Gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
 
 A Gauge is typically used for measured values like temperatures or current memory usage,
-but also "counts" that can go up and down, like the number of running processes.
+but also \"counts\" that can go up and down, like the number of running processes.
 
 Example use cases for Gauges:
 
@@ -24,9 +25,9 @@ Example:
 
  setup() ->
     prometheus_gauge:declare([{name, my_pool_size},
-                              {help, "Pool size."}]),
+                              {help, \"Pool size.\"}]),
     prometheus_gauge:declare([{name, my_pool_checked_out},
-                              {help, "Number of checked out sockets"}]).
+                              {help, \"Number of checked out sockets\"}]).
 
  set_size(Size) ->
     prometheus_gauge:set(my_pool_size, Size)
@@ -108,7 +109,7 @@ Raises:
 * `{invalid_value_error, Value, Message}` error if `duration_unit` is unknown or doesn't match metric name.
 * `{mf_already_exists, {Registry, Name}, Message}` error if a gauge with the same `Spec` already exists.
 """.
--spec new(prometheus_metric_spec:spec()) -> ok.
+-spec new(prometheus_metric:spec()) -> ok.
 new(Spec) ->
     prometheus_metric:insert_new_mf(?TABLE, ?MODULE, Spec).
 
@@ -124,7 +125,7 @@ Raises:
 * `{invalid_label_name, Name, Message}` error if `Name` isn't a valid label name.
 * `{invalid_value_error, Value, MessagE}` error if `duration_unit` is unknown or doesn't match metric name.
 """.
--spec declare(prometheus_metric_spec:spec()) -> boolean().
+-spec declare(prometheus_metric:spec()) -> boolean().
 declare(Spec) ->
     prometheus_metric:insert_mf(?TABLE, ?MODULE, Spec).
 

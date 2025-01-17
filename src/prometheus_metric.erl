@@ -1,4 +1,5 @@
 -module(prometheus_metric).
+-compile({parse_transform, prometheus_pt}).
 
 -export([
     insert_new_mf/3,

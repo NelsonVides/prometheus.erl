@@ -1,4 +1,5 @@
 -module(prometheus_model_helpers).
+-compile({parse_transform, prometheus_pt}).
 -moduledoc """
 Helpers for working with Prometheus data model. For advanced users.
 
