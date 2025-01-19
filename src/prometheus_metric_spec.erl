@@ -86,9 +86,8 @@ duration_unit_from_spec(Spec) ->
     prometheus_time:validate_duration_unit(SDU).
 
 -doc false.
--spec extract_common_params(Spec :: prometheus_metric:spec()) ->
-    {Registry, Name, Labels, Help, CallTimeout, DurationUnit, Data}
-when
+-spec extract_common_params(Spec :: prometheus_metric:spec()) -> Return when
+    Return :: {Registry, Name, Labels, Help, CallTimeout, DurationUnit, Data},
     Registry :: prometheus_registry:registry(),
     Name :: prometheus_metric:name(),
     Labels :: prometheus_metric:labels(),

@@ -186,9 +186,7 @@ maybe_set_default(_, _, _, _) ->
     ok.
 
 -doc false.
--spec remove_labels(Table, Registry, Name, LValues) ->
-    boolean() | no_return()
-when
+-spec remove_labels(Table, Registry, Name, LValues) -> boolean() | no_return() when
     Table :: atom(),
     Registry :: prometheus_registry:registry(),
     Name :: name(),
