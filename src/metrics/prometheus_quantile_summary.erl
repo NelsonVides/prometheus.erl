@@ -358,38 +358,11 @@ values(Registry, Name) ->
         false ->
             [];
         MF ->
-            DU = prometheus_metric:mf_duration_unit(MF),
             Labels = prometheus_metric:mf_labels(MF),
-            loop_through_keys(
-                Registry, Name, DU, Labels, sets:new([{version, 2}]), [], ets:first(?TABLE)
-            )
+            CLabels = prometheus_metric:mf_constant_labels(MF),
+            Fun = fun value_summary_metric/6,
+            loop_through_keys(Name, Fun, CLabels, Labels, Registry)
     end.
-
-loop_through_keys(_, _, _, _, _, Acc, '$end_of_table') ->
-    Acc;
-loop_through_keys(
-    Registry, Name, DU, Labels, Set, Acc, {Registry, Name, LabelValues, _} = CurrentKey
-) ->
-    Key = {Registry, Name, LabelValues},
-    case sets:is_element(Key, Set) of
-        true ->
-            NextKey = ets:next(?TABLE, CurrentKey),
-            loop_through_keys(Registry, Name, DU, Labels, Set, Acc, NextKey);
-        false ->
-            {Count, Sum, QNs} = value(Registry, Name, LabelValues),
-            Value = {
-                lists:zip(Labels, LabelValues),
-                Count,
-                prometheus_time:maybe_convert_to_du(DU, Sum),
-                QNs
-            },
-            NextKey = ets:next(?TABLE, CurrentKey),
-            NewSet = sets:add_element(Key, Set),
-            loop_through_keys(Registry, Name, DU, Labels, NewSet, [Value | Acc], NextKey)
-    end;
-loop_through_keys(Registry, Name, DU, Labels, Set, Acc, CurrentKey) ->
-    NextKey = ets:next(?TABLE, CurrentKey),
-    loop_through_keys(Registry, Name, DU, Labels, Set, Acc, NextKey).
 
 %%====================================================================
 %% Collector API
@@ -415,33 +388,43 @@ collect_mf(Registry, Callback) ->
 ?DOC(false).
 -spec collect_metrics(prometheus_metric:name(), tuple()) ->
     [prometheus_model:'Metric'()].
-collect_metrics(Name, {CLabels, Labels, Registry, DU, _Configuration}) ->
-    loop_through_keys(
-        Name, CLabels, Labels, Registry, DU, sets:new([{version, 2}]), [], ets:first(?TABLE)
-    ).
+collect_metrics(Name, {CLabels, Labels, Registry, _DU, _Configuration}) ->
+    Fun = fun model_summary_metric/6,
+    loop_through_keys(Name, Fun, CLabels, Labels, Registry).
+
+loop_through_keys(Name, Fun, CLabels, Labels, Registry) ->
+    Sets = sets:new([{version, 2}]),
+    First = ets:first(?TABLE),
+    loop_through_keys(Name, Fun, CLabels, Labels, Registry, Sets, [], First).
 
 loop_through_keys(_, _, _, _, _, _, Acc, '$end_of_table') ->
     Acc;
 loop_through_keys(
-    Name, CLabels, Labels, Registry, DU, Set, Acc, {Registry, Name, LabelValues, _} = CurrentKey
+    Name, Fun, CLabels, Labels, Registry, Set, Acc, {Registry, Name, LabelValues, _} = CurrentKey
 ) ->
     Key = {Registry, Name, LabelValues},
     case sets:is_element(Key, Set) of
         true ->
             NextKey = ets:next(?TABLE, CurrentKey),
-            loop_through_keys(Name, CLabels, Labels, Registry, DU, Set, Acc, NextKey);
+            loop_through_keys(Name, Fun, CLabels, Labels, Registry, Set, Acc, NextKey);
         false ->
             {Count, Sum, QNs} = value(Registry, Name, LabelValues),
-            Value = prometheus_model_helpers:summary_metric(
-                CLabels ++ lists:zip(Labels, LabelValues), Count, Sum, QNs
-            ),
-            NextKey = ets:next(?TABLE, CurrentKey),
+            Value = Fun(CLabels, Labels, LabelValues, Count, Sum, QNs),
+            NewAcc = [Value | Acc],
             NewSet = sets:add_element(Key, Set),
-            loop_through_keys(Name, CLabels, Labels, Registry, DU, NewSet, [Value | Acc], NextKey)
+            NextKey = ets:next(?TABLE, CurrentKey),
+            loop_through_keys(Name, Fun, CLabels, Labels, Registry, NewSet, NewAcc, NextKey)
     end;
-loop_through_keys(Name, CLabels, Labels, Registry, DU, Set, Acc, CurrentKey) ->
+loop_through_keys(Name, Fun, CLabels, Labels, Registry, Set, Acc, CurrentKey) ->
     NextKey = ets:next(?TABLE, CurrentKey),
-    loop_through_keys(Name, CLabels, Labels, Registry, DU, Set, Acc, NextKey).
+    loop_through_keys(Name, Fun, CLabels, Labels, Registry, Set, Acc, NextKey).
+
+model_summary_metric(CLabels, Labels, LabelValues, Count, Sum, QNs) ->
+    Labs = CLabels ++ lists:zip(Labels, LabelValues),
+    prometheus_model_helpers:summary_metric(Labs, Count, Sum, QNs).
+
+value_summary_metric(_CLabels, Labels, LabelValues, Count, Sum, QNs) ->
+    {lists:zip(Labels, LabelValues), Count, Sum, QNs}.
 
 %%====================================================================
 %% Private Parts
